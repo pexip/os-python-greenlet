@@ -1,0 +1,77 @@
+Source: python-greenlet
+Priority: optional
+Maintainer: Debian Python Team <team+python@tracker.debian.org>,
+Uploaders: Sandro Tosi <morph@debian.org>,
+           Laszlo Boszormenyi (GCS) <gcs@debian.org>,
+Build-Depends: debhelper-compat (= 13),
+               dh-python,
+               python3-all-dev,
+               python3-objgraph,
+               python3-psutil,
+               python3-setuptools,
+               python3-sphinx,
+               sphinx-common
+Standards-Version: 4.6.0.1
+Section: python
+Homepage: https://pypi.python.org/pypi/greenlet
+Vcs-Git: https://salsa.debian.org/python-team/packages/python-greenlet.git
+Vcs-Browser: https://salsa.debian.org/python-team/packages/python-greenlet
+
+Package: python-greenlet-doc
+Section: doc
+Architecture: all
+Multi-Arch: foreign
+Pre-Depends: ${misc:Pre-Depends},
+Depends: ${sphinxdoc:Depends},
+         ${misc:Depends},
+Suggests: python-greenlet-dev,
+          python3-greenlet,
+Description: Lightweight in-process concurrent programming - documentation
+ The greenlet package is a spin-off of Stackless, a version of CPython that
+ supports micro-threads called "tasklets". Tasklets run pseudo-concurrently
+ (typically in a single or a few OS-level threads) and are synchronized with
+ data exchanges on "channels".
+ .
+ greenlet is the standalone package derived from the py lib, and is used by
+ several non-blocking IO packages as a more flexible alternative to Python's
+ built in coroutines.
+ .
+ This is the documentation for greenlet.
+
+Package: python-greenlet-dev
+Architecture: any
+Pre-Depends: ${misc:Pre-Depends},
+Depends: python3-greenlet (= ${binary:Version}),
+         ${misc:Depends},
+Description: Lightweight in-process concurrent programming - development files
+ The greenlet package is a spin-off of Stackless, a version of CPython that
+ supports micro-threads called "tasklets". Tasklets run pseudo-concurrently
+ (typically in a single or a few OS-level threads) and are synchronized with
+ data exchanges on "channels".
+ .
+ greenlet is the standalone package derived from the py lib, and is used by
+ several non-blocking IO packages as a more flexible alternative to Python's
+ built in coroutines.
+ .
+ This is the development package for greenlet.
+
+Package: python3-greenlet
+Architecture: any
+Pre-Depends: ${misc:Pre-Depends},
+Depends: ${misc:Depends},
+         ${python3:Depends},
+         ${shlibs:Depends},
+Provides: ${python3:Provides},
+XB-Python-Version: ${python3:Versions}
+Conflicts: python-codespeak-lib (<< 1.0),
+Suggests: python-greenlet-dev,
+          python-greenlet-doc,
+Description: Lightweight in-process concurrent programming (python3)
+ The greenlet package is a spin-off of Stackless, a version of CPython that
+ supports micro-threads called "tasklets". Tasklets run pseudo-concurrently
+ (typically in a single or a few OS-level threads) and are synchronized with
+ data exchanges on "channels".
+ .
+ greenlet is the standalone package derived from the py lib, and is used by
+ several non-blocking IO packages as a more flexible alternative to Python's
+ built in coroutines.

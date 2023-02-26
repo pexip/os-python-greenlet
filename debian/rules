@@ -1,0 +1,42 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+DPKG_EXPORT_BUILDFLAGS = 1
+include /usr/share/dpkg/buildflags.mk
+
+DEB_HOST_ARCH ?= $(shell dpkg-architecture -qDEB_HOST_ARCH)
+
+%:
+	dh $@ --with python3,sphinxdoc --buildsystem=pybuild
+
+docs = {destdir}/usr/share/python-greenlet-doc/html
+PYBUILD_AFTER_CLEAN = rm -rf $(docs)
+PYBUILD_AFTER_INSTALL = \
+	PYTHONPATH={destdir}/{install_dir} \
+	{interpreter} -m sphinx -N -b html {dir}/docs/ $(docs)
+export PYBUILD_AFTER_CLEAN PYBUILD_AFTER_INSTALL
+
+override_dh_auto_install:
+	dh_auto_install
+	if [ -d $(CURDIR)/debian/tmp/usr/include/python3.7/ ]; then \
+		mv $(CURDIR)/debian/tmp/usr/include/python3.7/ \
+		$(CURDIR)/debian/tmp/usr/include/python3.7m/ ; \
+	fi
+
+override_dh_auto_test:
+ifeq (,$(findstring nocheck,$(DEB_BUILD_OPTIONS)))
+  ifneq (,$(filter $(DEB_HOST_ARCH), ppc64el))
+	-dh_auto_test
+  else
+	dh_auto_test
+  endif
+endif
+
+override_dh_compress:
+	dh_compress -X.html
+
+.PHONY: override_dh_auto_clean override_dh_auto_install \
+	override_dh_auto_test override_dh_compress

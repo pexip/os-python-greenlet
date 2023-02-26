@@ -1,0 +1,37 @@
+From: Robin Jarry <robin@jarry.cc>
+Date: Wed, 3 Nov 2021 14:21:00 +0100
+Subject: setup: use absolute paths
+
+This allows running the setup.py script from another directory. It is
+required because pybuild runs tests into a temp dir which is a sub
+folder of the sources.
+
+Signed-off-by: Robin Jarry <robin@jarry.cc>
+
+=== modified file 'setup.py'
+--- old/setup.py	2022-11-22 01:54:52 +0000
++++ new/setup.py	2022-11-22 02:05:11 +0000
+@@ -163,8 +163,12 @@
+     ]
+ 
+ 
++def abspath(rel):
++    return os.path.join(os.path.dirname(__file__), rel)
++
++
+ def get_greenlet_version():
+-    with open('src/greenlet/__init__.py') as f: # pylint:disable=unspecified-encoding
++    with open(abspath('src/greenlet/__init__.py')) as f: # pylint:disable=unspecified-encoding
+         looking_for = '__version__ = \''
+         for line in f:
+             if line.startswith(looking_for):
+@@ -177,7 +181,7 @@
+     name="greenlet",
+     version=get_greenlet_version(),
+     description='Lightweight in-process concurrent programming',
+-    long_description=readfile("README.rst"),
++    long_description=readfile(abspath("README.rst")),
+     long_description_content_type="text/x-rst",
+     url="https://greenlet.readthedocs.io/",
+     keywords="greenlet coroutine concurrency threads cooperative",
+

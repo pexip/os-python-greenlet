@@ -1,7 +1,8 @@
 Source: python-greenlet
 Priority: optional
-Maintainer: Debian Python Team <team+python@tracker.debian.org>,
-Uploaders: Sandro Tosi <morph@debian.org>,
+Maintainer: Pexip AS <packaging@pexip.com>
+XSBC-Pexip-Original-Maintainer: Debian Python Team <team+python@tracker.debian.org>,
+XSBC-Pexip-Original-Uploaders: Sandro Tosi <morph@debian.org>,
            Laszlo Boszormenyi (GCS) <gcs@debian.org>,
 Build-Depends: debhelper-compat (= 13),
                dh-python,
@@ -16,6 +17,7 @@ Section: python
 Homepage: https://pypi.python.org/pypi/greenlet
 Vcs-Git: https://salsa.debian.org/python-team/packages/python-greenlet.git
 Vcs-Browser: https://salsa.debian.org/python-team/packages/python-greenlet
+XS-Pexip-Upstream: http://ftp.debian.org/debian/ bookworm
 
 Package: python-greenlet-doc
 Section: doc

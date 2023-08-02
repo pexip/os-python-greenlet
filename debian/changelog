@@ -1,3 +1,10 @@
+python-greenlet (2.0.2-1pexip3) pexip; urgency=medium
+
+  * The build-time tests may generate core files dependign on
+    environment. Don't include these core files in the package!
+
+ -- Steve McIntyre <steve.mcintyre@pexip.com>  Wed, 02 Aug 2023 15:53:57 +0100
+
 python-greenlet (2.0.2-1pexip2) pexip; urgency=medium
 
   * No-change rebuild

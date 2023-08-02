@@ -25,6 +25,7 @@ override_dh_auto_install:
 		mv $(CURDIR)/debian/tmp/usr/include/python3.7/ \
 		$(CURDIR)/debian/tmp/usr/include/python3.7m/ ; \
 	fi
+	find $(CURDIR)/debian/tmp/ -name core -type f -delete
 
 override_dh_auto_test:
 ifeq (,$(findstring nocheck,$(DEB_BUILD_OPTIONS)))

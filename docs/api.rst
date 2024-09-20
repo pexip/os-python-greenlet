@@ -32,7 +32,6 @@ Greenlets
 
    .. autoattribute:: gr_context
 
-
       The :class:`contextvars.Context` in which ``g`` will run.
       Writable; defaults to ``None``, reflecting that a greenlet
       starts execution in an empty context unless told otherwise.
@@ -55,6 +54,17 @@ Greenlets
       object's ``f_back`` attributes. ``gr_frame`` is non-None only
       for suspended greenlets; it is None if the greenlet is dead, not
       yet started, or currently executing.
+
+      .. note:: Greenlet stack introspection is fragile on CPython 3.12
+         and later. The frame objects of a suspended greenlet are not safe
+         to access as-is, but must be adjusted by the greenlet package in
+         order to make traversing ``f_back`` links not crash the interpreter,
+         and restored to their original state when resuming the
+         greenlet. The intent is to handle this transparently, but it
+         does introduce additional overhead to switching greenlets,
+         and there may be obscure usage patterns that can still crash
+         the interpreter; if you find one of these, please report it
+         to the maintainer.
 
    .. autoattribute:: parent
 

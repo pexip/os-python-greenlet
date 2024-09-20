@@ -33,8 +33,8 @@ Copyright: (c) Olivier Grisel
  (c) Alex Willmer
 License: CC0-1.0-Universal
 
-Files: slp_platformselect.h
- platform/*
+Files: src/greenlet/slp_platformselect.h
+ src/greenlet/platform/*
 Copyright: Copyright (C) 2004-2006 Bob Ippolito <bob@redivi.com>,
  Copyright (C) 2005 Thiemo Seufer <ths@debian.org>,
  Copyright (C) 2002-2004 Hye-Shik Chang <perky@FreeBSD.org>,
@@ -49,6 +49,7 @@ License: PSFL-2
 Files: debian/*
 Copyright: (c) 2012- Laszlo Boszormenyi (GCS) <gcs@debian.org>,
  (c) 2010-2012 Örjan Persson <orange@fobie.net>
+ 2022-2024 Stefano Rivera <stefanor@debian.org>
 License: GPL-3
 
 License: GPL-3
@@ -86,7 +87,7 @@ License: CC0-1.0-Universal
  Certain owners wish to permanently relinquish those rights to a Work for the
  purpose of contributing to a commons of creative, cultural and scientific
  works ("Commons") that the public can reliably and without fear of later 
-claims of infringement build upon, modify, incorporate in other works, reuse
+ claims of infringement build upon, modify, incorporate in other works, reuse
  and redistribute as freely as possible in any form whatsoever and for any
  purposes, including without limitation commercial purposes. These owners may
  contribute to the Commons to promote the ideal of a free culture and the

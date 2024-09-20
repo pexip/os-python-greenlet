@@ -2,3 +2,5 @@
 Name: greenlet
 Contact: Jason Madden <jason@seecoresoftware.com>
 Repository-Browse: https://github.com/python-greenlet/greenlet
+Bug-Database: https://github.com/python-greenlet/greenlet/issues
+Bug-Submit: https://github.com/python-greenlet/greenlet/issues/new

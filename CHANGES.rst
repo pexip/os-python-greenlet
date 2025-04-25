@@ -2,6 +2,178 @@
  Changes
 =========
 
+3.1.0 (2024-09-10)
+==================
+
+.. note::
+
+    This will be the last release to support Python 3.7 and 3.8.
+
+- Adds support for Python 3.13.
+
+.. note::
+
+   greenlet will not work in no-gil (free threaded) builds of CPython.
+   Internally, greenlet heavily depends on the GIL.
+
+- Greatly reduce the chances for crashes during interpreter shutdown.
+  See `issue 411
+  <https://github.com/python-greenlet/greenlet/issues/411>`_.
+
+Platform Support
+----------------
+
+Support for the following platforms was contributed by the community.
+Note that they are untested by this project's continuous integration
+services.
+
+- Hitachi's `SuperH CPU <https://github.com/python-greenlet/greenlet/issues/166>`_.
+- `NetBSD on PowerPC.
+  <https://github.com/python-greenlet/greenlet/pull/402>`_
+- RiscV 64 with `-fno-omit-frame-pointer
+  <https://github.com/python-greenlet/greenlet/pull/404>`_. Note that
+  there are `known test failures
+  <https://github.com/python-greenlet/greenlet/issues/403>`_, so this
+  platform may not work reliably at all.
+
+
+3.0.3 (2023-12-21)
+==================
+
+- Python 3.12: Restore the full ability to walk the stack of a suspended
+  greenlet; previously only the innermost frame was exposed. See `issue 388
+  <https://github.com/python-greenlet/greenlet/issues/388>`_. Fix by
+  Joshua Oreman in `PR 393
+  <https://github.com/python-greenlet/greenlet/pull/393/>`_.
+
+3.0.2 (2023-12-08)
+==================
+
+- Packaging: Add a minimal ``pyproject.toml`` to sdists.
+- Packaging: Various updates to macOS wheels.
+- Fix a test case on Arm32. Note that this is not a supported platform
+  (there is no CI for it) and support is best effort; there may be
+  other issues lurking. See `issue 385 <https://github.com/python-greenlet/greenlet/issues/385>`_
+
+
+3.0.1 (2023-10-25)
+==================
+
+- Fix a potential crash on Python 3.8 at interpreter shutdown time.
+  This was a regression from earlier 3.0.x releases. Reported by Matt
+  Wozniski in `issue 376 <https://github.com/python-greenlet/greenlet/issues/376>`_.
+
+
+
+3.0.0 (2023-10-02)
+==================
+
+- No changes from 3.0rc3 aside from the version number.
+
+
+3.0.0rc3 (2023-09-12)
+=====================
+
+- Fix an intermittent error during process termination on some
+  platforms (GCC/Linux/libstdc++).
+
+
+3.0.0rc2 (2023-09-09)
+=====================
+
+- Fix some potential bugs (assertion failures and memory leaks) in
+  previously-untested error handling code. In some cases, this means
+  that the process will execute a controlled ``abort()`` after severe
+  trouble when previously the process might have continued for some
+  time with a corrupt state. It is unlikely those errors occurred in
+  practice.
+- Fix some assertion errors and potential bugs with re-entrant
+  switches.
+- Fix a potential crash when certain compilers compile greenlet with
+  high levels of optimization. The symptom would be that switching to
+  a greenlet for the first time immediately crashes.
+- Fix a potential crash when the callable object passed to the
+  greenlet constructor (or set as the ``greenlet.run`` attribute) has
+  a destructor attached to it that switches. Typically, triggering
+  this issue would require an unlikely subclass of
+  ``greenlet.greenlet``.
+- Python 3.11+: Fix rare switching errors that could occur when a
+  garbage collection was triggered during the middle of a switch, and
+  Python-level code in ``__del__`` or weakref callbacks switched to a
+  different greenlet and ultimately switched back to the original
+  greenlet. This often manifested as a ``SystemError``: "switch
+  returned NULL without an exception set."
+
+For context on the fixes, see `gevent issue #1985
+<https://github.com/gevent/gevent/issues/1985>`_.
+
+3.0.0rc1 (2023-09-01)
+=====================
+
+- Windows wheels are linked statically to the C runtime in an effort
+  to prevent import errors on systems without the correct C runtime
+  installed. It's not clear if this will make the situation better or
+  worse, so please share your experiences in `issue 346
+  <https://github.com/python-greenlet/greenlet/issues/346>`_.
+
+  Note that this only applies to the binary wheels found on PyPI.
+  Building greenlet from source defaults to the shared library. Set
+  the environment variable ``GREENLET_STATIC_RUNTIME=1`` at build time
+  to change that.
+- Build binary wheels for Python 3.12 on macOS.
+- Fix compiling greenlet on a debug build of CPython 3.12. There is
+  `one known issue
+  <https://github.com/python-greenlet/greenlet/issues/368>`_ that
+  leads to an interpreter crash on debug builds.
+- Python 3.12: Fix walking the frame stack of suspended greenlets.
+  Previously accessing ``glet.gr_frame.f_back`` would crash due to
+  `changes in CPython's undocumented internal frame handling <https://github.com/python/cpython/commit/1e197e63e21f77b102ff2601a549dda4b6439455>`_.
+
+Platforms
+---------
+- Now, greenlet *may* compile and work on Windows ARM64 using
+  llvm-mingw, but this is untested and unsupported. See `PR
+  <https://github.com/python-greenlet/greenlet/pull/224>`_ by Adrian
+  Vladu.
+- Now, greenlet *may* compile and work on LoongArch64 Linux systems,
+  but this is untested and unsupported. See `PR 257
+  <https://github.com/python-greenlet/greenlet/pull/257/files>`_ by merore.
+
+Known Issues
+------------
+
+- There may be (very) subtle issues with tracing on Python 3.12, which
+  has redesigned the entire tracing infrastructure.
+
+3.0.0a1 (2023-06-21)
+====================
+
+- Build binary wheels for S390x Linux. See `PR 358
+  <https://github.com/python-greenlet/greenlet/pull/358>`_ from Steven
+  Silvester.
+- Fix a rare crash on shutdown seen in uWSGI deployments. See `issue
+  330 <https://github.com/python-greenlet/greenlet/issues/330>`_ and `PR 356
+  <https://github.com/python-greenlet/greenlet/pull/356>`_ from Andrew
+  Wason.
+- Make the platform-specific low-level C/assembly snippets stop using
+  the ``register`` storage class. Newer versions of standards remove
+  this storage class, and it has been generally ignored by many
+  compilers for some time. See `PR 347
+  <https://github.com/python-greenlet/greenlet/pull/347>`_ from Khem
+  Raj.
+- Add initial support for Python 3.12. See `issue
+  <https://github.com/python-greenlet/greenlet/issues/323>`_ and `PR
+  <https://github.com/python-greenlet/greenlet/pull/327>`_; thanks go
+  to (at least) Michael Droettboom, Andreas Motl, Thomas A Caswell,
+  raphaelauv, Hugo van Kemenade, Mark Shannon, and Petr Viktorin.
+- Remove support for end-of-life Python versions, including Python
+  2.7, Python 3.5 and Python 3.6.
+- Require a compiler that supports ``noinline`` directives. See
+  `issue 271
+  <https://github.com/python-greenlet/greenlet/issues/266>`_.
+- Require a compiler that supports C++11.
+
+
 2.0.2 (2023-01-28)
 ==================
 
@@ -38,7 +210,7 @@
 =====================
 
 - Linux: Fix another group of rare crashes that could occur when shutting down an
-  interpeter running multiple threads. See `issue 325 <https://github.com/python-greenlet/greenlet/issues/325>`_.
+  interpreter running multiple threads. See `issue 325 <https://github.com/python-greenlet/greenlet/issues/325>`_.
 
 
 2.0.0rc4 (2022-10-30)
@@ -131,7 +303,7 @@ Platforms
   thanks to Brandt Bucher and the CPython developers.
 
 Fixes
------
+~~~~~
 
 - Fix several leaks that could occur when using greenlets from
   multiple threads. For example, it is no longer necessary to call
@@ -151,7 +323,7 @@ Fixes
   platforms. This work is ongoing.
 
 Changes
--------
+~~~~~~~
 
 - The repr of some greenlets has changed. In particular, if the
   greenlet object was running in a thread that has exited, the repr

@@ -26,18 +26,26 @@ if [ -d /greenlet -a -d /opt/python ]; then
     # Build in an isolated directory
     mkdir /tmp/build
     cd /tmp/build
+    git config --global --add safe.directory /greenlet/.git
     git clone /greenlet greenlet
     cd greenlet
 
     mkdir -p /greenlet/wheelhouse
     OPATH="$PATH"
     which auditwheel
-    for variant in `ls -d /opt/python/cp{27,35,36,37,38,39,310,311}*`; do
+    echo "Installed Python versions"
+    ls -l /opt/python
+    for variant in `ls -d /opt/python/cp{313,37,38,39,310,311,312}*`; do
+        if [ "$variant" = "/opt/python/cp313-313t" ]; then
+            echo "Skipping no-gil build. The GIL is required."
+            continue
+        fi
         export PATH="$variant/bin:$OPATH"
         echo "Building $variant $(python --version)"
 
         python -mpip install -U pip
-        python setup.py bdist_wheel
+        python -mpip install -U setuptools wheel
+        python -mpip wheel --wheel-dir ./dist .
         python -mpip install -U .[test]
         python -m unittest discover -v greenlet.tests
         PATH="$OPATH" auditwheel repair dist/greenlet*.whl
@@ -53,5 +61,5 @@ fi
 
 # Mount the current directory as /greenlet
 # Can't use -i on Travis with arm64, "input device not a tty"
-docker run --rm -v "$(pwd):/greenlet"  ${DOCKER_IMAGE:-quay.io/pypa/manylinux2010_x86_64} /greenlet/$(basename $0)
+docker run --rm -v "$(pwd):/greenlet"  ${DOCKER_IMAGE:-quay.io/pypa/manylinux2014_x86_64} /greenlet/$(basename $0)
 ls -l wheelhouse

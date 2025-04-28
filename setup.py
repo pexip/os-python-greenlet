@@ -67,20 +67,25 @@ if sys.platform == 'darwin' or 'clang' in plat_compiler:
     cpp_compile_args.append("--std=gnu++11")
 elif is_win and "MSC" in plat_compiler:
     # Older versions of MSVC (Python 2.7) don't handle C++ exceptions
-    # correctly by default. While newer versions do handle exceptions by default,
-    # they don't do it fully correctly. So we need an argument on all versions.
+    # correctly by default. While newer versions do handle exceptions
+    # by default, they don't do it fully correctly ("By default....the
+    # compiler generates code that only partially supports C++
+    # exceptions."). So we need an argument on all versions.
+
     #"/EH" == exception handling.
     #    "s" == standard C++,
     #    "c" == extern C functions don't throw
     # OR
     #   "a" == standard C++, and Windows SEH; anything may throw, compiler optimizations
-    #          around try blocks are less aggressive.
+    #          around try blocks are less aggressive. Because this catches SEH,
+    #          which Windows uses internally, the MS docs say this can be a security issue.
+    #          DO NOT USE.
     # /EHsc is suggested, and /EHa isn't supposed to be linked to other things not built
     # with it. Leaving off the "c" should just result in slower, safer code.
     # Other options:
     #    "r" == Always generate standard confirming checks for noexcept blocks, terminating
     #           if violated. IMPORTANT: We rely on this.
-    # See https://docs.microsoft.com/en-us/cpp/build/reference/eh-exception-handling-model?view=msvc-160
+    # See https://docs.microsoft.com/en-us/cpp/build/reference/eh-exception-handling-model?view=msvc-170
     handler = "/EHsr"
     cpp_compile_args.append(handler)
     # To disable most optimizations:
@@ -120,7 +125,7 @@ def _find_platform_headers():
     return glob.glob(GREENLET_PLATFORM_DIR + "switch_*.h")
 
 def _find_impl_headers():
-    return glob.glob(GREENLET_SRC_DIR + "*.hpp")
+    return glob.glob(GREENLET_SRC_DIR + "*.hpp") + glob.glob(GREENLET_SRC_DIR + "*.cpp")
 
 if hasattr(sys, "pypy_version_info"):
     ext_modules = []
@@ -228,33 +233,28 @@ setup(
         'Natural Language :: English',
         'Programming Language :: C',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.5',
-        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3 :: Only',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
         'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12',
+        'Programming Language :: Python :: 3.13',
         'Operating System :: OS Independent',
         'Topic :: Software Development :: Libraries :: Python Modules'
     ],
     extras_require={
         'docs': [
             'Sphinx',
-            # 0.18b1 breaks sphinx 1.8.5 which is the latest version that runs
-            # on Python 2. The version pin sphinx itself contains isn't specific enough.
-            'docutils < 0.18; python_version < "3"',
+            'furo',
         ],
         'test': [
             'objgraph',
-            # Sigh, all releases of this were yanked from PyPI.
-            #'faulthandler; python_version == "2.7" and platform_python_implementation == "CPython"',
             'psutil',
         ],
     },
-    python_requires=">=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*",
+    python_requires=">=3.7",
     zip_safe=False,
 )

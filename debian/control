@@ -2,17 +2,18 @@ Source: python-greenlet
 Priority: optional
 Maintainer: Pexip AS <packaging@pexip.com>
 XSBC-Pexip-Original-Maintainer: Debian Python Team <team+python@tracker.debian.org>,
-XSBC-Pexip-Original-Uploaders: Sandro Tosi <morph@debian.org>,
-           Laszlo Boszormenyi (GCS) <gcs@debian.org>,
+XSBC-Pexip-Original-Uploaders: Laszlo Boszormenyi (GCS) <gcs@debian.org>,
 Build-Depends: debhelper-compat (= 13),
                dh-python,
+               dh-sequence-sphinxdoc <!nodoc>,
+               furo <!nodoc>,
                python3-all-dev,
                python3-objgraph,
                python3-psutil,
                python3-setuptools,
-               python3-sphinx,
-               sphinx-common
-Standards-Version: 4.6.0.1
+               python3-sphinx <!nodoc>,
+Rules-Requires-Root: no
+Standards-Version: 4.7.0
 Section: python
 Homepage: https://pypi.python.org/pypi/greenlet
 Vcs-Git: https://salsa.debian.org/python-team/packages/python-greenlet.git
@@ -22,6 +23,7 @@ XS-Pexip-Upstream: http://deb.debian.org/debian/ trixie
 Package: python-greenlet-doc
 Section: doc
 Architecture: all
+Build-Profiles: <!nodoc>
 Multi-Arch: foreign
 Pre-Depends: ${misc:Pre-Depends},
 Depends: ${sphinxdoc:Depends},
@@ -64,7 +66,6 @@ Depends: ${misc:Depends},
          ${python3:Depends},
          ${shlibs:Depends},
 Provides: ${python3:Provides},
-XB-Python-Version: ${python3:Versions}
 Conflicts: python-codespeak-lib (<< 1.0),
 Suggests: python-greenlet-dev,
           python-greenlet-doc,

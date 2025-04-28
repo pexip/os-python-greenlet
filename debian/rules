@@ -10,14 +10,16 @@ include /usr/share/dpkg/buildflags.mk
 DEB_HOST_ARCH ?= $(shell dpkg-architecture -qDEB_HOST_ARCH)
 
 %:
-	dh $@ --with python3,sphinxdoc --buildsystem=pybuild
+	dh $@ --with python3 --buildsystem=pybuild
 
+ifeq (,$(findstring nodoc,$(DEB_BUILD_OPTIONS)))
 docs = {destdir}/usr/share/python-greenlet-doc/html
 PYBUILD_AFTER_CLEAN = rm -rf $(docs)
 PYBUILD_AFTER_INSTALL = \
 	PYTHONPATH={destdir}/{install_dir} \
 	{interpreter} -m sphinx -N -b html {dir}/docs/ $(docs)
 export PYBUILD_AFTER_CLEAN PYBUILD_AFTER_INSTALL
+endif
 
 override_dh_auto_install:
 	dh_auto_install
@@ -39,5 +41,4 @@ endif
 override_dh_compress:
 	dh_compress -X.html
 
-.PHONY: override_dh_auto_clean override_dh_auto_install \
-	override_dh_auto_test override_dh_compress
+.PHONY: override_dh_auto_install override_dh_auto_test override_dh_compress
